@@ -6,7 +6,7 @@ This repo is for a simple Recipe Book application using AWS Lambda and Serverles
 
 This application will allow creating/removing/updating/fetching RECIPE items. Each RECIPE item can optionally have an attachment image. Each user only has access to RECIPE items that he/she has created.
 
-# LOG items
+# RECIPE items
 
 The application stores RECIPE items, where each RECIPE item contains the following fields:
 
