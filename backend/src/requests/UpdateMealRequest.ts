@@ -3,6 +3,6 @@
  */
 export interface UpdateMealRequest {
   name: string
-  dueDate: string
+  dayOfWeek: string
   eaten: boolean
 }

@@ -44,11 +44,11 @@ export class MealAccess {
         mealId,
         userId
       },
-      UpdateExpression: 'set #n = :name, eaten = :eaten, dueDate = :dueDate',
+      UpdateExpression: 'set #n = :name, eaten = :eaten, dayOfWeek = :dayOfWeek',
       ExpressionAttributeValues: {
         ':name': mealUpdate.name,
         ':eaten': mealUpdate.eaten,
-        ':dueDate': mealUpdate.dueDate
+        ':dayOfWeek': mealUpdate.dayOfWeek
       },
       ExpressionAttributeNames: { '#n': 'name' },
       ReturnValues: 'UPDATED_NEW',

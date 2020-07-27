@@ -1,5 +1,5 @@
 export interface MealUpdate {
   name: string
-  dueDate: string
+  dayOfWeek: string
   eaten: boolean
 }

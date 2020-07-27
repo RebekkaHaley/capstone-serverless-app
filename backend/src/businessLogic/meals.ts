@@ -25,7 +25,7 @@ export async function createMeal(createMealRequest: CreateMealRequest, jwtToken:
     mealId: itemId,
     userId: userId,
     name: createMealRequest.name,
-    dueDate: createMealRequest.dueDate,
+    dayOfWeek: createMealRequest.dayOfWeek,
     createdAt: new Date().toISOString(),
     eaten: false
   })

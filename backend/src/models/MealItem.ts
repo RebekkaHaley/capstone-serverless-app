@@ -3,7 +3,7 @@ export interface MealItem {
   mealId: string
   createdAt: string
   name: string
-  dueDate: string
+  dayOfWeek: string
   eaten: boolean
   attachmentUrl?: string
 }

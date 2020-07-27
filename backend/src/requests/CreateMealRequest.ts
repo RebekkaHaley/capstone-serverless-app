@@ -3,5 +3,5 @@
  */
 export interface CreateMealRequest {
   name: string
-  dueDate: string
+  dayOfWeek: string
 }
