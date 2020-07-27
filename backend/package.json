@@ -1,5 +1,5 @@
 {
-  "name": "capstone-serverless-app",
+  "name": "capstone-app",
   "version": "1.0.0",
   "description": "Serverless image app for the Udacity Capstone Project",
   "dependencies": {
