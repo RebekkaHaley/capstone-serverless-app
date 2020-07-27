@@ -1,22 +1,22 @@
 # Capstone Serverless Project
 
-This repo is for a simple Recipe Book application using AWS Lambda and Serverless framework.
+This repo is for a simple Meal Planner application using AWS Lambda and Serverless framework.
 
 # Functionality of the application
 
-This application will allow creating/removing/updating/fetching RECIPE items. Each RECIPE item can optionally have an attachment image. Each user only has access to RECIPE items that he/she has created.
+This application will allow creating/removing/updating/fetching MEAL items. Each MEAL item can optionally have an attachment image. Each user only has access to MEAL items that he/she has created.
 
-# RECIPE items
+# MEAL items
 
-The application stores RECIPE items, where each RECIPE item contains the following fields:
+The application stores MEAL items, where each MEAL item contains the following fields:
 
-* `recipeId` (string) - a unique id for an item
+* `mealId` (string) - a unique id for a MEAL item
 * `createdAt` (string) - date and time when an item was created
-* `name` (string) - name of a RECIPE item (e.g. "Salad wrap")
-* `calories` (string) - number of calories in meal
-* `tried` or `liked` (boolean) - true if an item was completed, false otherwise
-* `attachmentUrl` (string) - a URL pointing to an image attached to a RECIPE item
-* `userId` (string) - id of a user who created a RECIPE item.
+* `name` (string) - name of a MEAL item (e.g. "Salad wrap")
+* `dayOfWeek` (string) - day of the week meal should be eaten on / was created on (up to user interpretation)
+* `eaten` (boolean) - true if MEAL item has been eaten, false otherwise
+* `attachmentUrl` (string) - a URL pointing to an image attached to a MEAL item
+* `userId` (string) - id of a user who created a MEAL item.
 
 # Functions implemented
 
@@ -24,15 +24,15 @@ The `serverless.yml` file has the following functions:
 
 * `Auth` - a custom authorizer for API Gateway that is added to all other functions.
 
-* `GetRecipes` -  returns all RECIPEs for a current user. A user id can be extracted from a JWT token that is sent by the frontend.
+* `GetMeals` -  returns all MEALs for a current user. A user id can be extracted from a JWT token that is sent by the frontend.
 
-* `CreateRecipe` - creates a new RECIPE for a current user. The shape of data sent by a client application to this function can be found in the `CreateRecipeRequest.ts` file. It receives a new RECIPE item to be created in JSON format.
+* `CreateMeal` - creates a new MEAL for a current user. The shape of data sent by a client application to this function can be found in the `CreateMealRequest.ts` file. It receives a new MEAL item to be created in JSON format.
 
-* `UpdateRecipe` - updates a RECIPE item created by a current user. The shape of data sent by a client application to this function can be found in the `UpdateRecipeRequest.ts` file. It receives an object that contains three fields that can be updated in a RECIPE item. The id of an item that should be updated is passed as a URL parameter. It should return an empty body.
+* `UpdateMeal` - updates a MEAL item created by a current user. The shape of data sent by a client application to this function can be found in the `UpdateMealRequest.ts` file. It receives an object that contains three fields that can be updated in a MEAL item. The id of an item that should be updated is passed as a URL parameter. It should return an empty body.
 
-* `DeleteRecipe` - deletes a RECIPE item created by a current user. Expects an id of a RECIPE item to remove. It should return an empty body.
+* `DeleteMeal` - deletes a MEAL item created by a current user. Expects an id of a MEAL item to remove. It should return an empty body.
 
-* `GenerateUploadUrl` - returns a pre-signed URL that can be used to upload an attachment file for a RECIPE item. An id of a user can be extracted from a JWT token passed by a client.
+* `GenerateUploadUrl` - returns a pre-signed URL that can be used to upload an attachment file for a MEAL item. An id of a user can be extracted from a JWT token passed by a client.
 
 # Frontend
 
@@ -64,11 +64,11 @@ logger.info('User was authorized', {
 
 ## Local Secondary Index
 
-To store RECIPE items, a DynamoDB table with local secondary index(es) has been used.
+To store MEAL items, a DynamoDB table with local secondary index(es) has been used.
 
 ```yml
 
-RecipesTable:
+MealsTable:
   Type: AWS::DynamoDB::Table
   Properties:
     AttributeDefinitions:
@@ -84,7 +84,7 @@ RecipesTable:
       - AttributeName: sortKey
         KeyType: RANGE
     BillingMode: PAY_PER_REQUEST
-    TableName: ${self:provider.environment.RECIPES_TABLE}
+    TableName: ${self:provider.environment.MEALS_TABLE}
     LocalSecondaryIndexes:
       - IndexName: ${self:provider.environment.INDEX_NAME}
         KeySchema:
