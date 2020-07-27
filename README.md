@@ -1,4 +1,4 @@
-# Serverless Recipe Book
+# Capstone Serverless Project
 
 This repo is for a simple Recipe Book application using AWS Lambda and Serverless framework.
 
