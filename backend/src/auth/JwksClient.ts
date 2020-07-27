@@ -1,6 +1,5 @@
 /**
  * Code from: https://github.com/sgmeyer/auth0-node-jwks-rs256/blob/master/src/lib/JwksClient.js
- * and: https://github.com/hupe1980/serverless-todo/blob/master/backend/src/auth/JwksClient.ts
  **/
 
 import axios from 'axios';

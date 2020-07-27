@@ -1,5 +1,5 @@
 service:
-  name: serverless-todo-app
+  name: capstone-serverless-app
 
 plugins:
   - serverless-webpack
@@ -13,20 +13,20 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs12.x # changed from 8.10
+  runtime: nodejs12.x
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-west-2'}
   randomnum: "457653846587"
 
-  #  tracing:
-  #    lambda: true
-  #    apiGateway: true
+  tracing:
+    lambda: true
+    apiGateway: true
 
   environment:
-    TODOS_TABLE: Todos-${self:provider.stage}
+    RECIPES_TABLE: Recipes-${self:provider.stage}
     USER_ID_INDEX: UserIdIndex
-    IMAGES_S3_BUCKET: serverless-todo-images-${self:provider.randomnum}-${self:provider.stage}
+    IMAGES_S3_BUCKET: serverless-recipe-images-${self:provider.randomnum}-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
 custom:
@@ -37,38 +37,37 @@ custom:
     api:
       info:
         version: v1.0.0
-        title: Serverless TODO Application
-        description: Serverless application for users to manage their TODO items
+        title: Serverless RECIPE Application
+        description: Serverless application for users to manage their RECIPE items
     models:
-      - name: TodoCreateRequest
+      - name: RecipeCreateRequest
         contentType: application/json
-        schema: ${file(models/create-todo-request.json)}
-      - name: TodoUpdateRequest
+        schema: ${file(models/create-recipe-request.json)}
+      - name: RecipeUpdateRequest
         contentType: application/json
-        schema: ${file(models/update-todo-request.json)}
+        schema: ${file(models/update-recipe-request.json)}
 
 functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
-  # DONE: Configure this function
-  GetTodos:
-    handler: src/lambda/http/getTodos.handler
+  GetRecipes:
+    handler: src/lambda/http/getRecipes.handler
     events:
       - http:
           method: get
-          path: todos
+          path: recipes
           cors: true
           authorizer: Auth
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
       - Effect: Allow
         Action:
           - "xray:PutTraceSegments"
@@ -76,30 +75,29 @@ functions:
         Resource:
           - "*"
 
-  # DONE: Configure this function
-  CreateTodo:
-    handler: src/lambda/http/createTodo.handler
+  CreateRecipe:
+    handler: src/lambda/http/createRecipe.handler
     events:
       - http:
           method: post
-          path: todos
+          path: recipes
           cors: true
           authorizer: Auth
           reqValidatorName: RequestBodyValidator
           documentation:
-            summary: Create a new TODO for a current user
-            description: Create a new TODO for a current user
+            summary: Create a new RECIPE for a current user
+            description: Create a new RECIPE for a current user
             requestModels:
-              "application/json": TodoCreateRequest
+              "application/json": RecipeCreateRequest
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
       - Effect: Allow
         Action:
           - "xray:PutTraceSegments"
@@ -107,32 +105,31 @@ functions:
         Resource:
           - "*"
 
-  # DONE: Configure this function
-  UpdateTodo:
-    handler: src/lambda/http/updateTodo.handler
+  UpdateRecipe:
+    handler: src/lambda/http/updateRecipe.handler
     events:
       - http:
           method: patch
-          path: todos/{todoId}
+          path: recipes/{recipeId}
           cors: true
           authorizer: Auth
           reqValidatorName: RequestBodyValidator
           documentation:
-            summary: Update a TODO item created by a current user
-            description: Update a TODO item created by a current user
+            summary: Update a RECIPE item created by a current user
+            description: Update a RECIPE item created by a current user
             requestModels:
-              "application/json": TodoUpdateRequest
+              "application/json": RecipeUpdateRequest
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
           - dynamodb:GetItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
       - Effect: Allow
         Action:
           - "xray:PutTraceSegments"
@@ -140,13 +137,12 @@ functions:
         Resource:
           - "*"
 
-  # DONE: Configure this function
-  DeleteTodo:
-    handler: src/lambda/http/deleteTodo.handler
+  DeleteRecipe:
+    handler: src/lambda/http/deleteRecipe.handler
     events:
       - http:
           method: delete
-          path: todos/{todoId}
+          path: recipes/{recipeId}
           cors: true
           authorizer: Auth
     iamRoleStatements:
@@ -154,12 +150,12 @@ functions:
         Action:
           - dynamodb:DeleteItem
           - dynamodb:GetItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:DeleteItem
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
       - Effect: Allow
         Action:
           - "xray:PutTraceSegments"
@@ -167,26 +163,24 @@ functions:
         Resource:
           - "*"
 
-  # DONE: Configure this function
   GenerateUploadUrl:
     handler: src/lambda/http/generateUploadUrl.handler
     events:
       - http:
           method: post
-          path: todos/{todoId}/attachment
+          path: recipes/{recipeId}/attachment
           cors: true
           authorizer: Auth
-    # iamRoleStatementsName: serverless-todo-app-dev-GenerateUploadUrl-lambdaRole
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
       - Effect: Allow
         Action:
           - s3:PutObject
@@ -201,7 +195,6 @@ functions:
 
 resources:
   Resources:
-    # DONE: Add any necessary AWS resources
     # API
 
     GatewayResponseDefault4XX:
@@ -224,13 +217,13 @@ resources:
         ValidateRequestBody: true
         ValidateRequestParameters: false
 
-    # Todos
+    # Recipes
 
-    TodosTable:
+    RecipesTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: todoId
+          - AttributeName: recipeId
             AttributeType: S
           - AttributeName: createdAt
             AttributeType: S
@@ -239,10 +232,10 @@ resources:
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
-          - AttributeName: todoId
+          - AttributeName: recipeId
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.TODOS_TABLE}
+        TableName: ${self:provider.environment.RECIPES_TABLE}
         LocalSecondaryIndexes:
           - IndexName: ${self:provider.environment.USER_ID_INDEX}
             KeySchema:

@@ -5,29 +5,30 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors } from 'middy/middlewares'
 
-import { getAllTodos } from '../../businessLogic/todos'
+import { CreateRecipeRequest } from '../../requests/CreateRecipeRequest'
+import { createRecipe } from '../../businessLogic/recipes'
 import { createLogger } from '../../utils/logger'
 
-
-const logger = createLogger('getTodosHandler')
+const logger = createLogger('createRecipeHandler')
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   // Log API calls
-  logger.info('Get todos for current user', event)
+  logger.info('Create a recipe for current user', event)
 
-  // DONE: Get a single TODO item
+  // DONE: Implement creating a new RECIPE item
+  const newRecipe: CreateRecipeRequest = JSON.parse(event.body)
 
   // Get auth token for user
   const authorization = event.headers.Authorization
   const split = authorization.split(' ')
   const jwtToken = split[1]
 
-  const todos = await getAllTodos(jwtToken)
+  const newItem = await createRecipe(newRecipe, jwtToken)
 
   return {
-    statusCode: 200,
+    statusCode: 201,
     body: JSON.stringify({
-      items: todos
+      item: newItem
     })
   }
 })
