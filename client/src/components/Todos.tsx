@@ -14,106 +14,106 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createTodo, deleteTodo, getTodos, patchTodo } from '../api/todos-api'
+import { createMeal, deleteMeal, getMeals, patchMeal } from '../api/meals-api'
 import Auth from '../auth/Auth'
-import { Todo } from '../types/Todo'
+import { Meal } from '../types/Meal'
 
-interface TodosProps {
+interface MealsProps {
   auth: Auth
   history: History
 }
 
-interface TodosState {
-  todos: Todo[]
-  newTodoName: string
-  loadingTodos: boolean
+interface MealsState {
+  meals: Meal[]
+  newMealName: string
+  loadingMeals: boolean
 }
 
-export class Todos extends React.PureComponent<TodosProps, TodosState> {
-  state: TodosState = {
-    todos: [],
-    newTodoName: '',
-    loadingTodos: true
+export class Meals extends React.PureComponent<MealsProps, MealsState> {
+  state: MealsState = {
+    meals: [],
+    newMealName: '',
+    loadingMeals: true
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newTodoName: event.target.value })
+    this.setState({ newMealName: event.target.value })
   }
 
-  onEditButtonClick = (todoId: string) => {
-    this.props.history.push(`/todos/${todoId}/edit`)
+  onEditButtonClick = (mealId: string) => {
+    this.props.history.push(`/meals/${mealId}/edit`)
   }
 
-  onTodoCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onMealCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
       const dayOfWeek = this.calculateDayOfWeek()
-      const newTodo = await createTodo(this.props.auth.getIdToken(), {
-        name: this.state.newTodoName,
+      const newMeal = await createMeal(this.props.auth.getIdToken(), {
+        name: this.state.newMealName,
         dayOfWeek
       })
       this.setState({
-        todos: [...this.state.todos, newTodo],
-        newTodoName: ''
+        meals: [...this.state.meals, newMeal],
+        newMealName: ''
       })
     } catch {
-      alert('Todo creation failed')
+      alert('Meal creation failed')
     }
   }
 
-  onTodoDelete = async (todoId: string) => {
+  onMealDelete = async (mealId: string) => {
     try {
-      await deleteTodo(this.props.auth.getIdToken(), todoId)
+      await deleteMeal(this.props.auth.getIdToken(), mealId)
       this.setState({
-        todos: this.state.todos.filter(todo => todo.todoId != todoId)
+        meals: this.state.meals.filter(meal => meal.mealId != mealId)
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('Meal deletion failed')
     }
   }
 
-  onTodoCheck = async (pos: number) => {
+  onMealCheck = async (pos: number) => {
     try {
-      const todo = this.state.todos[pos]
-      await patchTodo(this.props.auth.getIdToken(), todo.todoId, {
-        name: todo.name,
-        dayOfWeek: todo.dayOfWeek,
-        eaten: !todo.eaten
+      const meal = this.state.meals[pos]
+      await patchMeal(this.props.auth.getIdToken(), meal.mealId, {
+        name: meal.name,
+        dayOfWeek: meal.dayOfWeek,
+        eaten: !meal.eaten
       })
       this.setState({
-        todos: update(this.state.todos, {
-          [pos]: { eaten: { $set: !todo.eaten } }
+        meals: update(this.state.meals, {
+          [pos]: { eaten: { $set: !meal.eaten } }
         })
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('Meal deletion failed')
     }
   }
 
   async componentDidMount() {
     try {
-      const todos = await getTodos(this.props.auth.getIdToken())
+      const meals = await getMeals(this.props.auth.getIdToken())
       this.setState({
-        todos,
-        loadingTodos: false
+        meals,
+        loadingMeals: false
       })
     } catch (e) {
-      alert(`Failed to fetch todos: ${e.message}`)
+      alert(`Failed to fetch meals: ${e.message}`)
     }
   }
 
   render() {
     return (
       <div>
-        <Header as="h1">TODOs</Header>
+        <Header as="h1">My Meals</Header>
 
-        {this.renderCreateTodoInput()}
+        {this.renderCreateMealInput()}
 
-        {this.renderTodos()}
+        {this.renderMeals()}
       </div>
     )
   }
 
-  renderCreateTodoInput() {
+  renderCreateMealInput() {
     return (
       <Grid.Row>
         <Grid.Column width={16}>
@@ -123,7 +123,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
               labelPosition: 'left',
               icon: 'add',
               content: 'New task',
-              onClick: this.onTodoCreate
+              onClick: this.onMealCreate
             }}
             fluid
             actionPosition="left"
@@ -138,47 +138,47 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     )
   }
 
-  renderTodos() {
-    if (this.state.loadingTodos) {
+  renderMeals() {
+    if (this.state.loadingMeals) {
       return this.renderLoading()
     }
 
-    return this.renderTodosList()
+    return this.renderMealsList()
   }
 
   renderLoading() {
     return (
       <Grid.Row>
         <Loader indeterminate active inline="centered">
-          Loading TODOs
+          Loading My Meals
         </Loader>
       </Grid.Row>
     )
   }
 
-  renderTodosList() {
+  renderMealsList() {
     return (
       <Grid padded>
-        {this.state.todos.map((todo, pos) => {
+        {this.state.meals.map((meal, pos) => {
           return (
-            <Grid.Row key={todo.todoId}>
+            <Grid.Row key={meal.mealId}>
               <Grid.Column width={1} verticalAlign="middle">
                 <Checkbox
-                  onChange={() => this.onTodoCheck(pos)}
-                  checked={todo.eaten}
+                  onChange={() => this.onMealCheck(pos)}
+                  checked={meal.eaten}
                 />
               </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
-                {todo.name}
+                {meal.name}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {todo.dayOfWeek}
+                {meal.dayOfWeek}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="blue"
-                  onClick={() => this.onEditButtonClick(todo.todoId)}
+                  onClick={() => this.onEditButtonClick(meal.mealId)}
                 >
                   <Icon name="pencil" />
                 </Button>
@@ -187,13 +187,13 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
                 <Button
                   icon
                   color="red"
-                  onClick={() => this.onTodoDelete(todo.todoId)}
+                  onClick={() => this.onMealDelete(meal.mealId)}
                 >
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              {todo.attachmentUrl && (
-                <Image src={todo.attachmentUrl} size="small" wrapped />
+              {meal.attachmentUrl && (
+                <Image src={meal.attachmentUrl} size="small" wrapped />
               )}
               <Grid.Column width={16}>
                 <Divider />

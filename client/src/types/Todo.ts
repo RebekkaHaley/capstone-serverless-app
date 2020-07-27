@@ -1,5 +1,5 @@
-export interface Todo {
-  todoId: string
+export interface Meal {
+  mealId: string
   createdAt: string
   name: string
   dayOfWeek: string

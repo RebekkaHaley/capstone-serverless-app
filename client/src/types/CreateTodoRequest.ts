@@ -1,4 +1,4 @@
-export interface CreateTodoRequest {
+export interface CreateMealRequest {
   name: string
   dayOfWeek: string
 }
