@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "recipe",
+  "title": "meal",
   "type": "object",
   "properties": {
     "name": {

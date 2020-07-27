@@ -1,6 +1,6 @@
-export interface RecipeItem {
+export interface MealItem {
   userId: string
-  recipeId: string
+  mealId: string
   createdAt: string
   name: string
   dueDate: string

@@ -1,7 +1,7 @@
 /**
- * Fields in a request to create a single RECIPE item.
+ * Fields in a request to create a single MEAL item.
  */
-export interface CreateRecipeRequest {
+export interface CreateMealRequest {
   name: string
   dueDate: string
 }

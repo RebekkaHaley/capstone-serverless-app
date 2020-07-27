@@ -5,7 +5,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import * as middy from 'middy'
 import { cors } from 'middy/middlewares'
 
-import { setAttachmentUrl } from '../../businessLogic/recipes'
+import { setAttachmentUrl } from '../../businessLogic/meals'
 import { createLogger } from '../../utils/logger'
 
 import * as uuid from 'uuid'
@@ -26,8 +26,8 @@ const logger = createLogger('generateUploadUrlHandler')
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   logger.info('Generate upload url', event)
 
-  // DONE: Return a presigned URL to upload a file for a RECIPE item with the provided id
-  const recipeId = event.pathParameters.recipeId
+  // DONE: Return a presigned URL to upload a file for a MEAL item with the provided id
+  const mealId = event.pathParameters.mealId
 
   // Get auth token for user
   const authorization = event.headers.Authorization
@@ -38,7 +38,7 @@ export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGat
   const imageId = uuid.v4()
 
   setAttachmentUrl(
-    recipeId,
+    mealId,
     `https://${bucketName}.s3.amazonaws.com/${imageId}`,
     jwtToken
   )

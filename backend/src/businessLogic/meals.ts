@@ -1,47 +1,47 @@
 import * as uuid from 'uuid'
 
-import { RecipeItem } from '../models/RecipeItem'
-import { RecipeUpdate } from '../models/RecipeUpdate'
+import { MealItem } from '../models/MealItem'
+import { MealUpdate } from '../models/MealUpdate'
 
-import { RecipeAccess } from '../dataLayer/recipesAccess'
+import { MealAccess } from '../dataLayer/mealsAccess'
 
-import { CreateRecipeRequest } from '../requests/CreateRecipeRequest'
-import { UpdateRecipeRequest } from '../requests/UpdateRecipeRequest'
+import { CreateMealRequest } from '../requests/CreateMealRequest'
+import { UpdateMealRequest } from '../requests/UpdateMealRequest'
 
 import { parseUserId } from '../auth/utils'
 
-const recipeAccess = new RecipeAccess()
+const mealAccess = new MealAccess()
 
-export async function getAllRecipes(jwtToken: string): Promise<RecipeItem[]> {
+export async function getAllMeals(jwtToken: string): Promise<MealItem[]> {
   const userId = parseUserId(jwtToken) // Use pre-made function
-  return recipeAccess.getAllRecipes(userId)
+  return mealAccess.getAllMeals(userId)
 }
 
-export async function createRecipe(createRecipeRequest: CreateRecipeRequest, jwtToken: string): Promise<RecipeItem> {
+export async function createMeal(createMealRequest: CreateMealRequest, jwtToken: string): Promise<MealItem> {
   const userId = parseUserId(jwtToken) // Use pre-made function
   const itemId = uuid.v4()
 
-  return await recipeAccess.createRecipe({
-    recipeId: itemId,
+  return await mealAccess.createMeal({
+    mealId: itemId,
     userId: userId,
-    name: createRecipeRequest.name,
-    dueDate: createRecipeRequest.dueDate,
+    name: createMealRequest.name,
+    dueDate: createMealRequest.dueDate,
     createdAt: new Date().toISOString(),
     eaten: false
   })
 }
 
-export async function updateRecipe(recipeId: string, updateRecipeRequest: UpdateRecipeRequest, jwtToken: string): Promise<RecipeUpdate> {
+export async function updateMeal(mealId: string, updateMealRequest: UpdateMealRequest, jwtToken: string): Promise<MealUpdate> {
   const userId = parseUserId(jwtToken) // Use pre-made function
-  return await recipeAccess.updateRecipe(recipeId, userId, updateRecipeRequest)
+  return await mealAccess.updateMeal(mealId, userId, updateMealRequest)
 }
 
-export async function deleteRecipe(recipeId: string, jwtToken: string): Promise<void> {
+export async function deleteMeal(mealId: string, jwtToken: string): Promise<void> {
   const userId = parseUserId(jwtToken) // Use pre-made function
-  return await recipeAccess.deleteRecipe(recipeId, userId)
+  return await mealAccess.deleteMeal(mealId, userId)
 }
 
-export async function setAttachmentUrl(recipeId: string, attachmentUrl: string, jwtToken: string): Promise<void> {
+export async function setAttachmentUrl(mealId: string, attachmentUrl: string, jwtToken: string): Promise<void> {
   const userId = parseUserId(jwtToken) // Use pre-made function
-  return await recipeAccess.setAttachmentUrl(recipeId, userId, attachmentUrl)
+  return await mealAccess.setAttachmentUrl(mealId, userId, attachmentUrl)
 }

@@ -24,9 +24,9 @@ provider:
     apiGateway: true
 
   environment:
-    RECIPES_TABLE: Recipes-${self:provider.stage}
+    MEALS_TABLE: Meals-${self:provider.stage}
     USER_ID_INDEX: UserIdIndex
-    IMAGES_S3_BUCKET: serverless-recipe-images-${self:provider.randomnum}-${self:provider.stage}
+    IMAGES_S3_BUCKET: serverless-meal-images-${self:provider.randomnum}-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
 custom:
@@ -37,37 +37,37 @@ custom:
     api:
       info:
         version: v1.0.0
-        title: Serverless RECIPE Application
-        description: Serverless application for users to manage their RECIPE items
+        title: Serverless Meal Diary Application
+        description: Serverless application for users to manage their MEAL items
     models:
-      - name: RecipeCreateRequest
+      - name: MealCreateRequest
         contentType: application/json
-        schema: ${file(models/create-recipe-request.json)}
-      - name: RecipeUpdateRequest
+        schema: ${file(models/create-meal-request.json)}
+      - name: MealUpdateRequest
         contentType: application/json
-        schema: ${file(models/update-recipe-request.json)}
+        schema: ${file(models/update-meal-request.json)}
 
 functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
 
-  GetRecipes:
-    handler: src/lambda/http/getRecipes.handler
+  GetMeals:
+    handler: src/lambda/http/getMeals.handler
     events:
       - http:
           method: get
-          path: recipes
+          path: meals
           cors: true
           authorizer: Auth
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.MEALS_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.MEALS_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
       - Effect: Allow
         Action:
           - "xray:PutTraceSegments"
@@ -75,29 +75,29 @@ functions:
         Resource:
           - "*"
 
-  CreateRecipe:
-    handler: src/lambda/http/createRecipe.handler
+  CreateMeal:
+    handler: src/lambda/http/createMeal.handler
     events:
       - http:
           method: post
-          path: recipes
+          path: meals
           cors: true
           authorizer: Auth
           reqValidatorName: RequestBodyValidator
           documentation:
-            summary: Create a new RECIPE for a current user
-            description: Create a new RECIPE for a current user
+            summary: Create a new MEAL for a current user
+            description: Create a new MEAL for a current user
             requestModels:
-              "application/json": RecipeCreateRequest
+              "application/json": MealCreateRequest
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.MEALS_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.MEALS_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
       - Effect: Allow
         Action:
           - "xray:PutTraceSegments"
@@ -105,31 +105,31 @@ functions:
         Resource:
           - "*"
 
-  UpdateRecipe:
-    handler: src/lambda/http/updateRecipe.handler
+  UpdateMeal:
+    handler: src/lambda/http/updateMeal.handler
     events:
       - http:
           method: patch
-          path: recipes/{recipeId}
+          path: meals/{mealId}
           cors: true
           authorizer: Auth
           reqValidatorName: RequestBodyValidator
           documentation:
-            summary: Update a RECIPE item created by a current user
-            description: Update a RECIPE item created by a current user
+            summary: Update a MEAL item created by a current user
+            description: Update a MEAL item created by a current user
             requestModels:
-              "application/json": RecipeUpdateRequest
+              "application/json": MealUpdateRequest
     iamRoleStatements:
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
           - dynamodb:GetItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.MEALS_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.MEALS_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
       - Effect: Allow
         Action:
           - "xray:PutTraceSegments"
@@ -137,12 +137,12 @@ functions:
         Resource:
           - "*"
 
-  DeleteRecipe:
-    handler: src/lambda/http/deleteRecipe.handler
+  DeleteMeal:
+    handler: src/lambda/http/deleteMeal.handler
     events:
       - http:
           method: delete
-          path: recipes/{recipeId}
+          path: meals/{mealId}
           cors: true
           authorizer: Auth
     iamRoleStatements:
@@ -150,12 +150,12 @@ functions:
         Action:
           - dynamodb:DeleteItem
           - dynamodb:GetItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.MEALS_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:DeleteItem
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.MEALS_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
       - Effect: Allow
         Action:
           - "xray:PutTraceSegments"
@@ -168,7 +168,7 @@ functions:
     events:
       - http:
           method: post
-          path: recipes/{recipeId}/attachment
+          path: meals/{mealId}/attachment
           cors: true
           authorizer: Auth
     iamRoleStatements:
@@ -176,11 +176,11 @@ functions:
         Action:
           - dynamodb:UpdateItem
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.MEALS_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:Query
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.RECIPES_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.MEALS_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
       - Effect: Allow
         Action:
           - s3:PutObject
@@ -217,13 +217,13 @@ resources:
         ValidateRequestBody: true
         ValidateRequestParameters: false
 
-    # Recipes
+    # Meals
 
-    RecipesTable:
+    MealsTable:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: recipeId
+          - AttributeName: mealId
             AttributeType: S
           - AttributeName: createdAt
             AttributeType: S
@@ -232,10 +232,10 @@ resources:
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
-          - AttributeName: recipeId
+          - AttributeName: mealId
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.RECIPES_TABLE}
+        TableName: ${self:provider.environment.MEALS_TABLE}
         LocalSecondaryIndexes:
           - IndexName: ${self:provider.environment.USER_ID_INDEX}
             KeySchema:

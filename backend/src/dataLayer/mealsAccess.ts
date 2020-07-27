@@ -4,74 +4,74 @@ import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 
 const XAWS = AWSXRay.captureAWS(AWS)
 
-import { RecipeItem } from '../models/RecipeItem'
-import { RecipeUpdate } from '../models/RecipeUpdate'
+import { MealItem } from '../models/MealItem'
+import { MealUpdate } from '../models/MealUpdate'
 
-export class RecipeAccess {
+export class MealAccess {
 
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
-    private readonly recipesTable = process.env.RECIPES_TABLE,
+    private readonly mealsTable = process.env.MEALS_TABLE,
     // private readonly userIdIndex = process.env.USER_ID_INDEX
   ) { }
 
-  async getAllRecipes(userId: string): Promise<RecipeItem[]> {
-    console.log('Getting all recipes')
+  async getAllMeals(userId: string): Promise<MealItem[]> {
+    console.log('Getting all meals')
 
     const result = await this.docClient.query({
-      TableName: this.recipesTable,
+      TableName: this.mealsTable,
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeValues: { ':userId': userId }
     }).promise()
 
     const items = result.Items
-    return items as RecipeItem[]
+    return items as MealItem[]
   }
 
-  async createRecipe(recipeItem: RecipeItem): Promise<RecipeItem> {
+  async createMeal(mealItem: MealItem): Promise<MealItem> {
     await this.docClient.put({
-      TableName: this.recipesTable,
-      Item: recipeItem
+      TableName: this.mealsTable,
+      Item: mealItem
     }).promise()
 
-    return recipeItem
+    return mealItem
   }
 
-  async updateRecipe(recipeId: string, userId: string, recipeUpdate: RecipeUpdate): Promise<RecipeUpdate> {
+  async updateMeal(mealId: string, userId: string, mealUpdate: MealUpdate): Promise<MealUpdate> {
     await this.docClient.update({
-      TableName: this.recipesTable,
+      TableName: this.mealsTable,
       Key: {
-        recipeId,
+        mealId,
         userId
       },
       UpdateExpression: 'set #n = :name, eaten = :eaten, dueDate = :dueDate',
       ExpressionAttributeValues: {
-        ':name': recipeUpdate.name,
-        ':eaten': recipeUpdate.eaten,
-        ':dueDate': recipeUpdate.dueDate
+        ':name': mealUpdate.name,
+        ':eaten': mealUpdate.eaten,
+        ':dueDate': mealUpdate.dueDate
       },
       ExpressionAttributeNames: { '#n': 'name' },
       ReturnValues: 'UPDATED_NEW',
     }).promise()
 
-    return recipeUpdate
+    return mealUpdate
   }
 
-  async deleteRecipe(recipeId: string, userId: string): Promise<void> {
+  async deleteMeal(mealId: string, userId: string): Promise<void> {
     await this.docClient.delete({
-      TableName: this.recipesTable,
+      TableName: this.mealsTable,
       Key: {
-        recipeId,
+        mealId,
         userId
       }
     }).promise()
   }
 
-  async setAttachmentUrl(recipeId: string, userId: string, attachmentUrl: string): Promise<void> {
+  async setAttachmentUrl(mealId: string, userId: string, attachmentUrl: string): Promise<void> {
     await this.docClient.update({
-      TableName: this.recipesTable,
+      TableName: this.mealsTable,
       Key: {
-        recipeId,
+        mealId,
         userId
       },
       UpdateExpression: 'set attachmentUrl = :attachmentUrl',
