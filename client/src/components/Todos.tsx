@@ -77,11 +77,11 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
       await patchTodo(this.props.auth.getIdToken(), todo.todoId, {
         name: todo.name,
         dayOfWeek: todo.dayOfWeek,
-        done: !todo.done
+        eaten: !todo.eaten
       })
       this.setState({
         todos: update(this.state.todos, {
-          [pos]: { done: { $set: !todo.done } }
+          [pos]: { eaten: { $set: !todo.eaten } }
         })
       })
     } catch {
@@ -165,7 +165,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
               <Grid.Column width={1} verticalAlign="middle">
                 <Checkbox
                   onChange={() => this.onTodoCheck(pos)}
-                  checked={todo.done}
+                  checked={todo.eaten}
                 />
               </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">

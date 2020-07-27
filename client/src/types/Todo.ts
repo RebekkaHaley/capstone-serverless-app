@@ -3,6 +3,6 @@ export interface Todo {
   createdAt: string
   name: string
   dayOfWeek: string
-  done: boolean
+  eaten: boolean
   attachmentUrl?: string
 }
