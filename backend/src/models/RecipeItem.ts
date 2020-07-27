@@ -4,6 +4,6 @@ export interface RecipeItem {
   createdAt: string
   name: string
   dueDate: string
-  done: boolean
+  eaten: boolean
   attachmentUrl?: string
 }

@@ -27,7 +27,7 @@ export async function createRecipe(createRecipeRequest: CreateRecipeRequest, jwt
     name: createRecipeRequest.name,
     dueDate: createRecipeRequest.dueDate,
     createdAt: new Date().toISOString(),
-    done: false
+    eaten: false
   })
 }
 

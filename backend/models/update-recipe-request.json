@@ -9,14 +9,14 @@
     "dueDate": {
       "type": "string"
     },
-    "done": {
+    "eaten": {
       "type": "boolean"
     }
   },
   "required": [
     "name",
     "dueDate",
-    "done"
+    "eaten"
   ],
   "additionalProperties": false
 }

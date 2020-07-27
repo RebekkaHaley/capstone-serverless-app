@@ -44,10 +44,10 @@ export class RecipeAccess {
         recipeId,
         userId
       },
-      UpdateExpression: 'set #n = :name, done = :done, dueDate = :dueDate',
+      UpdateExpression: 'set #n = :name, eaten = :eaten, dueDate = :dueDate',
       ExpressionAttributeValues: {
         ':name': recipeUpdate.name,
-        ':done': recipeUpdate.done,
+        ':eaten': recipeUpdate.eaten,
         ':dueDate': recipeUpdate.dueDate
       },
       ExpressionAttributeNames: { '#n': 'name' },
