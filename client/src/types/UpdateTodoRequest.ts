@@ -1,5 +1,5 @@
 export interface UpdateTodoRequest {
   name: string
-  dueDate: string
+  dayOfWeek: string
   done: boolean
 }

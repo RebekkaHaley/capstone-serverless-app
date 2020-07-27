@@ -46,10 +46,10 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
 
   onTodoCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
-      const dueDate = this.calculateDueDate()
+      const dayOfWeek = this.calculateDayOfWeek()
       const newTodo = await createTodo(this.props.auth.getIdToken(), {
         name: this.state.newTodoName,
-        dueDate
+        dayOfWeek
       })
       this.setState({
         todos: [...this.state.todos, newTodo],
@@ -76,7 +76,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
       const todo = this.state.todos[pos]
       await patchTodo(this.props.auth.getIdToken(), todo.todoId, {
         name: todo.name,
-        dueDate: todo.dueDate,
+        dayOfWeek: todo.dayOfWeek,
         done: !todo.done
       })
       this.setState({
@@ -172,7 +172,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
                 {todo.name}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {todo.dueDate}
+                {todo.dayOfWeek}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
@@ -205,10 +205,11 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     )
   }
 
-  calculateDueDate(): string {
+  calculateDayOfWeek(): string {
     const date = new Date()
     date.setDate(date.getDate() + 7)
 
-    return dateFormat(date, 'yyyy-mm-dd') as string
+    // Code from "calculateDueDate()" // return dateFormat(date, 'yyyy-mm-dd') as string
+    return date.getDay()
   }
 }
