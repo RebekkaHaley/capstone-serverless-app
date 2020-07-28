@@ -56,7 +56,8 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
         dayOfWeek
       })
       this.setState({
-        meals: [...this.state.meals, newMeal],
+        // newMeal will appear first in order
+        meals: [newMeal, ...this.state.meals],
         newMealName: ''
       })
     } catch {
@@ -163,7 +164,7 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
             }}
             fluid
             actionPosition="left"
-            placeholder="To change the world..."
+            placeholder="Homemade meal... or order a takeaway"
             onChange={this.handleNameChange}
           />
         </Grid.Column>
@@ -232,9 +233,6 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
                 <Image src={meal.attachmentUrl} size="small" wrapped />
               )}
 
-
-
-
               <Grid.Column width={16}>
                 <Divider />
               </Grid.Column>
@@ -244,9 +242,9 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
                   <Form.Group inline>
                     <Form.Field>
                       <label>Name</label>
-                      <input type='text' value={this.state.nameInput} onChange={this.handleNameInputChange}/>
+                      <input type='text' value={this.state.nameInput} onChange={this.handleNameInputChange} />
                       <label>Day of Week</label>
-                      <input type='text' value={this.state.dayOfWeekInput} onChange={this.handleDayOfWeekInputChange}/>
+                      <input type='text' value={this.state.dayOfWeekInput} onChange={this.handleDayOfWeekInputChange} />
                     </Form.Field>
                     <Button icon color="blue" type='submit'>
                       <Icon name="refresh" />
@@ -254,12 +252,6 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
                   </Form.Group>
                 </Form>
               </Grid.Column>
-
-
-
-
-
-
 
               <Grid.Column width={16}>
                 <Divider />
