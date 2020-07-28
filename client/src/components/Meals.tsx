@@ -103,20 +103,35 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
     this.setState({ dayOfWeekInput: event.target.value })
   }
 
-  onMealUpdate = async (pos: number) => {
+  onMealNameUpdate = async (pos: number) => {
     try {
       const meal = this.state.meals[pos]
       await patchMeal(this.props.auth.getIdToken(), meal.mealId, {
         name: this.state.nameInput,
+        dayOfWeek: meal.dayOfWeek,
+        eaten: meal.eaten
+      })
+      this.setState({
+        meals: update(this.state.meals, {
+          [pos]: { name: { $set: this.state.nameInput } }
+        })
+      })
+    } catch {
+      alert('Meal deletion failed')
+    }
+  }
+
+  onMealDayOfWeekUpdate = async (pos: number) => {
+    try {
+      const meal = this.state.meals[pos]
+      await patchMeal(this.props.auth.getIdToken(), meal.mealId, {
+        name: meal.name,
         dayOfWeek: this.state.dayOfWeekInput,
         eaten: meal.eaten
       })
       this.setState({
         meals: update(this.state.meals, {
-          [pos]: {
-            name: { $set: this.state.nameInput },
-            dayOfWeek: { $set: this.state.dayOfWeekInput }
-          }
+          [pos]: { dayOfWeek: { $set: this.state.dayOfWeekInput } }
         })
       })
     } catch {
@@ -229,20 +244,31 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              {meal.attachmentUrl && (
-                <Image src={meal.attachmentUrl} size="small" wrapped />
-              )}
-
+              
               <Grid.Column width={16}>
+                {meal.attachmentUrl && (
+                  <Image src={meal.attachmentUrl} size="small" wrapped />
+                )}
                 <Divider />
               </Grid.Column>
 
-              <Grid.Column width={16}>
-                <Form onSubmit={() => this.onMealUpdate(pos)}>
+              <Grid.Column width={8}>
+                <Form onSubmit={() => this.onMealNameUpdate(pos)}>
                   <Form.Group inline>
                     <Form.Field>
                       <label>Name</label>
                       <input type='text' value={this.state.nameInput} onChange={this.handleNameInputChange} />
+                    </Form.Field>
+                    <Button icon color="blue" type='submit'>
+                      <Icon name="refresh" />
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Grid.Column>
+              <Grid.Column width={8}>
+                <Form onSubmit={() => this.onMealDayOfWeekUpdate(pos)}>
+                  <Form.Group inline>
+                    <Form.Field>
                       <label>Day of Week</label>
                       <input type='text' value={this.state.dayOfWeekInput} onChange={this.handleDayOfWeekInputChange} />
                     </Form.Field>
