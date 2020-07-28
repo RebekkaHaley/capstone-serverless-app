@@ -122,7 +122,7 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
               color: 'teal',
               labelPosition: 'left',
               icon: 'add',
-              content: 'New task',
+              content: 'New meal',
               onClick: this.onMealCreate
             }}
             fluid
@@ -210,6 +210,7 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
     date.setDate(date.getDate() + 7)
 
     // Code from "calculateDueDate()" // return dateFormat(date, 'yyyy-mm-dd') as string
-    return date.getDay()
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+    return days[date.getDay()]
   }
 }
