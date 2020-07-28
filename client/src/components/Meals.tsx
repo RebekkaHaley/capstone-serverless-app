@@ -260,7 +260,7 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
                       <input type='text' value={this.state.nameInput} onChange={this.handleNameInputChange} />
                     </Form.Field>
                     <Button icon color="blue" type='submit'>
-                      <Icon name="refresh" />
+                      <Icon name="pencil" />
                     </Button>
                   </Form.Group>
                 </Form>
@@ -273,7 +273,7 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
                       <input type='text' value={this.state.dayOfWeekInput} onChange={this.handleDayOfWeekInputChange} />
                     </Form.Field>
                     <Button icon color="blue" type='submit'>
-                      <Icon name="refresh" />
+                      <Icon name="pencil" />
                     </Button>
                   </Form.Group>
                 </Form>
