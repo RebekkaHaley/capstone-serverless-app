@@ -12,7 +12,7 @@ export class MealAccess {
   constructor(
     private readonly docClient: DocumentClient = createDynamoDBClient(),
     private readonly mealsTable = process.env.MEALS_TABLE,
-    // private readonly userIdIndex = process.env.USER_ID_INDEX
+    private readonly userIdIndex = process.env.USER_ID_INDEX
   ) { }
 
   async getAllMeals(userId: string): Promise<MealItem[]> {
@@ -20,8 +20,10 @@ export class MealAccess {
 
     const result = await this.docClient.query({
       TableName: this.mealsTable,
+      IndexName: this.userIdIndex, // For faster query retrival
       KeyConditionExpression: 'userId = :userId',
-      ExpressionAttributeValues: { ':userId': userId }
+      ExpressionAttributeValues: { ':userId': userId },
+      ScanIndexForward: false // To retrive latest meals at the top
     }).promise()
 
     const items = result.Items
