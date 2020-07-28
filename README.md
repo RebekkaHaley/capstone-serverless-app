@@ -1,6 +1,6 @@
 # Capstone Serverless Project
 
-This repo is for a simple Meal Planner application using AWS Lambda and Serverless framework.
+This repo is for a simple **Meal Planner** application using AWS Lambda and Serverless framework.
 
 # Functionality of the application
 
