@@ -180,7 +180,7 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
                   color="blue"
                   onClick={() => this.onEditButtonClick(meal.mealId)}
                 >
-                  <Icon name="pencil" />
+                  <Icon name="picture" />
                 </Button>
               </Grid.Column>
               <Grid.Column width={1} floated="right">
@@ -210,7 +210,7 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
     date.setDate(date.getDate() + 7)
 
     // Code from "calculateDueDate()" // return dateFormat(date, 'yyyy-mm-dd') as string
-    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
     return days[date.getDay()]
   }
 }
