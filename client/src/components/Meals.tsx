@@ -93,8 +93,7 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
     }
   }
 
-  // ------------------------------------------------------------------------------------
-
+  // DONE: Add interface to update 'name' and 'dayOfWeek'
   handleNameInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ nameInput: event.target.value })
   }
@@ -217,7 +216,7 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
                   color="blue"
                   onClick={() => this.onEditButtonClick(meal.mealId)}
                 >
-                  <Icon name="picture" />
+                  <Icon name="pencil" />
                 </Button>
               </Grid.Column>
               <Grid.Column width={1} floated="right">
@@ -242,15 +241,17 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
 
               <Grid.Column width={16}>
                 <Form onSubmit={() => this.onMealUpdate(pos)}>
-                  <Form.Field inline>
-                    <label>Name</label>
-                    <input type='text' value={this.state.nameInput} onChange={this.handleNameInputChange}/>
-                    <label>Day of Week</label>
-                    <input type='text' value={this.state.dayOfWeekInput} onChange={this.handleDayOfWeekInputChange}/>
-                  </Form.Field>
-                  <Button icon color="blue" type='submit'>
-                    <Icon name="pencil" />
-                  </Button>
+                  <Form.Group inline>
+                    <Form.Field>
+                      <label>Name</label>
+                      <input type='text' value={this.state.nameInput} onChange={this.handleNameInputChange}/>
+                      <label>Day of Week</label>
+                      <input type='text' value={this.state.dayOfWeekInput} onChange={this.handleDayOfWeekInputChange}/>
+                    </Form.Field>
+                    <Button icon color="blue" type='submit'>
+                      <Icon name="refresh" />
+                    </Button>
+                  </Form.Group>
                 </Form>
               </Grid.Column>
 
