@@ -1,4 +1,3 @@
-import dateFormat from 'dateformat'
 import { History } from 'history'
 import update from 'immutability-helper'
 import * as React from 'react'
@@ -11,7 +10,8 @@ import {
   Icon,
   Input,
   Image,
-  Loader
+  Loader,
+  Form
 } from 'semantic-ui-react'
 
 import { createMeal, deleteMeal, getMeals, patchMeal } from '../api/meals-api'
@@ -27,13 +27,17 @@ interface MealsState {
   meals: Meal[]
   newMealName: string
   loadingMeals: boolean
+  nameInput: string
+  dayOfWeekInput: string
 }
 
 export class Meals extends React.PureComponent<MealsProps, MealsState> {
   state: MealsState = {
     meals: [],
     newMealName: '',
-    loadingMeals: true
+    loadingMeals: true,
+    nameInput: '',
+    dayOfWeekInput: ''
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,6 +92,39 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
       alert('Meal deletion failed')
     }
   }
+
+  // ------------------------------------------------------------------------------------
+
+  handleNameInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ nameInput: event.target.value })
+  }
+
+  handleDayOfWeekInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ dayOfWeekInput: event.target.value })
+  }
+
+  onMealUpdate = async (pos: number) => {
+    try {
+      const meal = this.state.meals[pos]
+      await patchMeal(this.props.auth.getIdToken(), meal.mealId, {
+        name: this.state.nameInput,
+        dayOfWeek: this.state.dayOfWeekInput,
+        eaten: meal.eaten
+      })
+      this.setState({
+        meals: update(this.state.meals, {
+          [pos]: {
+            name: { $set: this.state.nameInput },
+            dayOfWeek: { $set: this.state.dayOfWeekInput }
+          }
+        })
+      })
+    } catch {
+      alert('Meal deletion failed')
+    }
+  }
+  // ------------------------------------------------------------------------------------
+
 
   async componentDidMount() {
     try {
@@ -195,6 +232,34 @@ export class Meals extends React.PureComponent<MealsProps, MealsState> {
               {meal.attachmentUrl && (
                 <Image src={meal.attachmentUrl} size="small" wrapped />
               )}
+
+
+
+
+              <Grid.Column width={16}>
+                <Divider />
+              </Grid.Column>
+
+              <Grid.Column width={16}>
+                <Form onSubmit={() => this.onMealUpdate(pos)}>
+                  <Form.Field inline>
+                    <label>Name</label>
+                    <input type='text' value={this.state.nameInput} onChange={this.handleNameInputChange}/>
+                    <label>Day of Week</label>
+                    <input type='text' value={this.state.dayOfWeekInput} onChange={this.handleDayOfWeekInputChange}/>
+                  </Form.Field>
+                  <Button icon color="blue" type='submit'>
+                    <Icon name="pencil" />
+                  </Button>
+                </Form>
+              </Grid.Column>
+
+
+
+
+
+
+
               <Grid.Column width={16}>
                 <Divider />
               </Grid.Column>
